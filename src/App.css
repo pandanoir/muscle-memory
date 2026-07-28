@@ -44,60 +44,24 @@ body,
   letter-spacing: 0.02em;
 }
 
-.meta {
-  background: var(--panel);
-  border-radius: 12px;
-  padding: 12px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.meta-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-}
-
-.meta-label {
-  color: var(--muted);
-}
-
-.meta-value {
-  font-variant-numeric: tabular-nums;
-}
-
-.preview {
+.editor {
   flex: 1;
   min-height: 200px;
+  width: 100%;
+  resize: none;
   background: var(--panel);
+  color: var(--text);
+  border: none;
   border-radius: 12px;
   padding: 12px 16px;
-  overflow: auto;
-}
-
-.preview-body {
-  margin: 0;
-  white-space: pre-wrap;
-  word-break: break-word;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 13px;
   line-height: 1.5;
-  color: var(--text);
+  outline: none;
 }
 
-.preview-more {
-  margin-top: 8px;
-  color: var(--muted);
-  font-size: 12px;
-  text-align: center;
-}
-
-.preview-empty {
-  color: var(--muted);
-  font-size: 14px;
-  text-align: center;
-  padding: 24px 0;
+.editor:focus {
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 .actions {
