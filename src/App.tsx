@@ -73,10 +73,51 @@ function App() {
     notify({ kind: 'ok', message: '保存しました' })
   }, [busy, dirty, text, notify])
 
+  const handleShare = useCallback(async () => {
+    if (busy) return
+    if (typeof navigator.share !== 'function') {
+      notify({ kind: 'error', message: 'この端末では共有できません' })
+      return
+    }
+    setBusy(true)
+    try {
+      await navigator.share({ text })
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'AbortError') return
+      const msg = e instanceof Error ? e.message : String(e)
+      notify({ kind: 'error', message: `共有失敗: ${msg}` })
+    } finally {
+      setBusy(false)
+    }
+  }, [busy, text, notify])
+
   return (
     <div className="app">
       <header className="header">
         <h1>Muscle Memory</h1>
+        <button
+          type="button"
+          className="icon-btn"
+          onClick={handleShare}
+          disabled={busy}
+          aria-label="共有"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 3v13" />
+            <path d="M7 8l5-5 5 5" />
+            <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" />
+          </svg>
+        </button>
       </header>
 
       <textarea

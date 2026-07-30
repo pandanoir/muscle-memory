@@ -37,11 +37,43 @@ body,
   min-height: 100vh;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .header h1 {
   font-size: 20px;
   margin: 0;
   font-weight: 600;
   letter-spacing: 0.02em;
+}
+
+.icon-btn {
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 8px;
+  margin: -8px;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: color 0.12s ease, background 0.12s ease;
+}
+
+.icon-btn:not(:disabled):active {
+  color: var(--text);
+  background: var(--secondary);
+}
+
+.icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .editor {
