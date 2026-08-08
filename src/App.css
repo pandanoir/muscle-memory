@@ -246,8 +246,8 @@ body,
   position: sticky;
   top: 0;
   background: var(--panel);
-  margin: 0 -12px;
-  padding: 10px 12px;
+  margin: calc(-1 * env(safe-area-inset-top)) -12px 0;
+  padding: calc(env(safe-area-inset-top) + 10px) 12px 10px;
   font-size: 14px;
   font-weight: 600;
   display: flex;
