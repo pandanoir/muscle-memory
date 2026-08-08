@@ -113,6 +113,10 @@ body,
   cursor: pointer;
   color: var(--text);
   transition: background 0.12s ease, opacity 0.12s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .btn:disabled {
