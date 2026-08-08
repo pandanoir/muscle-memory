@@ -166,3 +166,48 @@ export function isValidIncoming(text: string): boolean {
   if (blocks.length === 0) return false
   return blocks.every((b) => b.exercises.length > 0)
 }
+
+export type ExerciseDetail = {
+  name: string
+  weight: number | null
+  weightRaw: string | null
+  reps: number[]
+}
+
+export type DateEntry = {
+  date: string
+  exercises: ExerciseDetail[]
+}
+
+const WEIGHT_LINE = /^\s*weight:\s*(.+?)\s*$/m
+const REPS_LINE = /^\s*reps:\s*\[([^\]]*)\]/m
+const NUMBER_HEAD = /-?\d+(?:\.\d+)?/
+
+export function parseExerciseDetail(ex: Exercise): ExerciseDetail {
+  const weightMatch = ex.raw.match(WEIGHT_LINE)
+  const weightRaw = weightMatch ? weightMatch[1] : null
+  const weightNumMatch = weightRaw ? weightRaw.match(NUMBER_HEAD) : null
+  const weight = weightNumMatch ? Number(weightNumMatch[0]) : null
+
+  const repsMatch = ex.raw.match(REPS_LINE)
+  const reps = repsMatch
+    ? repsMatch[1]
+        .split(',')
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0)
+        .map((s) => Number(s))
+        .filter((n) => Number.isFinite(n))
+    : []
+
+  return { name: ex.name, weight, weightRaw, reps }
+}
+
+export function extractEntries(content: string): DateEntry[] {
+  const parsed = parseContent(content)
+  return parsed.blocks
+    .map((b) => ({
+      date: b.date,
+      exercises: b.exercises.map(parseExerciseDetail),
+    }))
+    .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0))
+}

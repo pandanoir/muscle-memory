@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isValidIncoming, mergeIntoContent } from './records'
+import { extractEntries, isValidIncoming, mergeIntoContent } from './records'
 
 const PROMPT = `これは筋トレの記録です。
 説明文の途中に - name: なども現れないはず。
@@ -113,6 +113,22 @@ describe('mergeIntoContent - 追記・置換ロジック', () => {
     // records部の情報は保持
     expect(merged.includes('date: 2026-08-08')).toBe(true)
     expect(merged.includes('date: 2026-08-09')).toBe(true)
+  })
+
+  it('extractEntries: weight/repsをパースし日付昇順で返す', () => {
+    let content = PROMPT
+    content = mergeIntoContent(content, record0809)
+    content = mergeIntoContent(content, record0808)
+    const entries = extractEntries(content)
+    expect(entries.map((e) => e.date)).toEqual(['2026-08-08', '2026-08-09'])
+    const bench = entries[0].exercises[0]
+    expect(bench.name).toBe('ベンチプレス')
+    expect(bench.weight).toBe(20)
+    expect(bench.weightRaw).toBe('20kg/手')
+    expect(bench.reps).toEqual([15, 15, 10])
+    const row = entries[1].exercises[0]
+    expect(row.weight).toBe(26)
+    expect(row.reps).toEqual([12, 12, 12])
   })
 
   it('連続追記で余計な重複が発生しない', () => {

@@ -3,6 +3,7 @@ import { loadLog, saveLog } from './storage'
 import { INITIAL_PROMPT } from './initialPrompt'
 import { readClipboard, writeClipboard } from './clipboard'
 import { buildRecentCopy, isValidIncoming, mergeIntoContent } from './records'
+import { Graph } from './Graph'
 import './App.css'
 
 type Toast = { kind: 'ok' | 'error'; message: string } | null
@@ -22,6 +23,7 @@ function App() {
   const [draft, setDraft] = useState(initial)
   const [toast, setToast] = useState<Toast>(null)
   const [busy, setBusy] = useState(false)
+  const [tab, setTab] = useState<'record' | 'graph'>('record')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
@@ -123,6 +125,28 @@ function App() {
     <div className="app">
       <header className="header">
         <h1>Muscle Memory</h1>
+        <nav className="tabs" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === 'record'}
+            className={`tab ${tab === 'record' ? 'is-active' : ''}`}
+            onClick={() => setTab('record')}
+            disabled={editing}
+          >
+            記録
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === 'graph'}
+            className={`tab ${tab === 'graph' ? 'is-active' : ''}`}
+            onClick={() => setTab('graph')}
+            disabled={editing}
+          >
+            グラフ
+          </button>
+        </nav>
         <button
           type="button"
           className="icon-btn"
@@ -148,15 +172,20 @@ function App() {
         </button>
       </header>
 
-      <textarea
-        ref={textareaRef}
-        className="editor"
-        value={displayText}
-        onChange={(e) => setDraft(e.target.value)}
-        readOnly={!editing}
-        spellCheck={false}
-      />
+      {tab === 'graph' ? (
+        <Graph content={savedText} />
+      ) : (
+        <textarea
+          ref={textareaRef}
+          className="editor"
+          value={displayText}
+          onChange={(e) => setDraft(e.target.value)}
+          readOnly={!editing}
+          spellCheck={false}
+        />
+      )}
 
+      {tab === 'record' && (
       <div className="actions">
         {editing ? (
           <>
@@ -236,6 +265,7 @@ function App() {
           </>
         )}
       </div>
+      )}
 
       {toast && (
         <div className={`toast toast-${toast.kind}`} role="status">
